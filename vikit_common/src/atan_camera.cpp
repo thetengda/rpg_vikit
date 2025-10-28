@@ -46,10 +46,10 @@ ATANCamera::
 ~ATANCamera()
 {}
 
-Vector3d ATANCamera::
+Eigen::Vector3d ATANCamera::
 cam2world(const double& x, const double& y) const
 {
-  Vector2d dist_cam((x - cx_) * fx_inv_,
+  Eigen::Vector2d dist_cam((x - cx_) * fx_inv_,
                     (y - cy_) * fy_inv_);
   double dist_r = dist_cam.norm();
   double r = invrtrans(dist_r);
@@ -61,25 +61,25 @@ cam2world(const double& x, const double& y) const
   return unproject2d(d_factor * dist_cam).normalized();
 }
 
-Vector3d ATANCamera::
-cam2world (const Vector2d& px) const
+Eigen::Vector3d ATANCamera::
+cam2world (const Eigen::Vector2d& px) const
 {
   return cam2world(px[0], px[1]);
 }
 
-Vector2d ATANCamera::
-world2cam(const Vector3d& xyz_c) const
+Eigen::Vector2d ATANCamera::
+world2cam(const Eigen::Vector3d& xyz_c) const
 {
   return world2cam(project2d(xyz_c));
 }
 
-Vector2d ATANCamera::
-world2cam(const Vector2d& uv) const
+Eigen::Vector2d ATANCamera::
+world2cam(const Eigen::Vector2d& uv) const
 {
   double r = uv.norm();
   double factor = rtrans_factor(r);
-  Vector2d dist_cam = factor * uv;
-  return Vector2d(cx_ + fx_ * dist_cam[0],
+  Eigen::Vector2d dist_cam = factor * uv;
+  return Eigen::Vector2d(cx_ + fx_ * dist_cam[0],
                   cy_ + fy_ * dist_cam[1]);
 }
 

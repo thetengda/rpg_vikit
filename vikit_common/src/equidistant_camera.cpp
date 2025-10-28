@@ -25,7 +25,7 @@ EquidistantCamera(double width, double height, double scale,
               fx_(fx * scale), fy_(fy * scale), cx_(cx * scale), cy_(cy * scale),
               distortion_(fabs(k1) > 0.0000001)
 {
-  cout << "scale: " << scale << endl;
+  std::cout << "scale: " << scale << std::endl;
   k1_ = k1; k2_ = k2; k3_ = k3; k4_ = k4;
 }
 
@@ -33,10 +33,10 @@ EquidistantCamera::
 ~EquidistantCamera()
 {}
 
-Vector3d EquidistantCamera::
+Eigen::Vector3d EquidistantCamera::
 cam2world(const double& u, const double& v) const
 {
-  Vector3d xyz;
+  Eigen::Vector3d xyz;
   if(!distortion_)
   {
     xyz[0] = (u - cx_)/fx_;
@@ -68,22 +68,22 @@ cam2world(const double& u, const double& v) const
   return xyz.normalized();
 }
 
-Vector3d EquidistantCamera::
-cam2world (const Vector2d& uv) const
+Eigen::Vector3d EquidistantCamera::
+cam2world (const Eigen::Vector2d& uv) const
 {
   return cam2world(uv[0], uv[1]);
 }
 
-Vector2d EquidistantCamera::
-world2cam(const Vector3d& xyz) const
+Eigen::Vector2d EquidistantCamera::
+world2cam(const Eigen::Vector3d& xyz) const
 {
   return world2cam(project2d(xyz));
 }
 
-Vector2d EquidistantCamera::
-world2cam(const Vector2d& uv) const
+Eigen::Vector2d EquidistantCamera::
+world2cam(const Eigen::Vector2d& uv) const
 {
-  Vector2d px;
+  Eigen::Vector2d px;
   if(!distortion_)
   {
     px[0] = fx_*uv[0] + cx_;

@@ -46,10 +46,10 @@ PolynomialCamera::
 ~PolynomialCamera()
 {}
 
-Vector3d PolynomialCamera::
+Eigen::Vector3d PolynomialCamera::
 cam2world(const double& u, const double& v) const
 {
-  Vector3d xyz;
+  Eigen::Vector3d xyz;
   if(!distortion_)
   {
     // xyz[0] = (u - cx_)/fx_;
@@ -86,17 +86,17 @@ cam2world(const double& u, const double& v) const
   return xyz.normalized();
 }
 
-Vector3d PolynomialCamera::
-cam2world (const Vector2d& uv) const
+Eigen::Vector3d PolynomialCamera::
+cam2world (const Eigen::Vector2d& uv) const
 {
   return cam2world(uv[0], uv[1]);
 }
 
-Vector2d PolynomialCamera::
-world2cam(const Vector3d& xyz) const
+Eigen::Vector2d PolynomialCamera::
+world2cam(const Eigen::Vector3d& xyz) const
 {
   // return world2cam(project2d(xyz));
-  Vector2d px;
+  Eigen::Vector2d px;
   if(!distortion_)
   {
     px[0] = fx_*xyz[0] + cx_;
@@ -121,10 +121,10 @@ world2cam(const Vector3d& xyz) const
   return px;
 }
 
-Vector2d PolynomialCamera::
-world2cam(const Vector2d& uv) const
+Eigen::Vector2d PolynomialCamera::
+world2cam(const Eigen::Vector2d& uv) const
 {
-  Vector2d px;
+  Eigen::Vector2d px;
   if(!distortion_)
   {
     px[0] = fx_*uv[0] + cx_;

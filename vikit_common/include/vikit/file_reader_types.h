@@ -8,6 +8,8 @@
 #ifndef VIKIT_FILE_READER_TYPES_H_
 #define VIKIT_FILE_READER_TYPES_H_
 
+#include <Eigen/Eigen>
+
 namespace vk {
 
 /// Common types
@@ -26,7 +28,7 @@ public:
   friend std::istream& operator >>(std::istream& in, ImuRotvelLinacc& pair);
 };
 
-std::ostream& operator <<(std::ostream& out, const ImuRotvelLinacc& gt)
+inline std::ostream& operator <<(std::ostream& out, const ImuRotvelLinacc& gt)
 {
   out << gt.timestamp_ << " "
       << gt.w_.x() << " " << gt.w_.y() << " " << gt.w_.z() << " "
@@ -34,7 +36,7 @@ std::ostream& operator <<(std::ostream& out, const ImuRotvelLinacc& gt)
   return out;
 }
 
-std::istream& operator >>(std::istream& in, ImuRotvelLinacc& gt)
+inline std::istream& operator >>(std::istream& in, ImuRotvelLinacc& gt)
 {
   double wx, wy, wz, ax, ay, az;
   in >> gt.timestamp_;
@@ -63,7 +65,7 @@ public:
   friend std::istream& operator >>(std::istream& in, ImuRotvelLinacc& pair);
 };
 
-std::ostream& operator <<(std::ostream& out, const PoseStamped& gt)
+inline std::ostream& operator <<(std::ostream& out, const PoseStamped& gt)
 {
   out << gt.timestamp_ << " "
       << gt.t_.x() << " " << gt.t_.y() << " " << gt.t_.z() << " "
@@ -72,7 +74,7 @@ std::ostream& operator <<(std::ostream& out, const PoseStamped& gt)
   return out;
 }
 
-std::istream& operator >>(std::istream& in, PoseStamped& gt)
+inline std::istream& operator >>(std::istream& in, PoseStamped& gt)
 {
   in >> gt.timestamp_;
   double tx, ty, tz, qx, qy, qz, qw;

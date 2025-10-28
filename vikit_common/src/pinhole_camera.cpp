@@ -28,7 +28,7 @@ PinholeCamera(double width, double height, double scale,
               undist_map2_(height_, width_, CV_16SC2),
               use_optimization_(false)
 {
-  cout << "scale: " << scale << endl;
+  std::cout << "scale: " << scale << std::endl;
   d_[0] = d0; d_[1] = d1; d_[2] = d2; d_[3] = d3; d_[4] = d4;
   cvK_ = (cv::Mat_<float>(3, 3) << fx_, 0.0, cx_, 0.0, fy_, cy_, 0.0, 0.0, 1.0);
   cvD_ = (cv::Mat_<float>(1, 5) << d_[0], d_[1], d_[2], d_[3], d_[4]);
@@ -42,10 +42,10 @@ PinholeCamera::
 ~PinholeCamera()
 {}
 
-Vector3d PinholeCamera::
+Eigen::Vector3d PinholeCamera::
 cam2world(const double& u, const double& v) const
 {
-  Vector3d xyz;
+  Eigen::Vector3d xyz;
   if(!distortion_)
   {
     xyz[0] = (u - cx_)/fx_;
@@ -65,22 +65,22 @@ cam2world(const double& u, const double& v) const
   return xyz.normalized();
 }
 
-Vector3d PinholeCamera::
-cam2world (const Vector2d& uv) const
+Eigen::Vector3d PinholeCamera::
+cam2world (const Eigen::Vector2d& uv) const
 {
   return cam2world(uv[0], uv[1]);
 }
 
-Vector2d PinholeCamera::
-world2cam(const Vector3d& xyz) const
+Eigen::Vector2d PinholeCamera::
+world2cam(const Eigen::Vector3d& xyz) const
 {
   return world2cam(project2d(xyz));
 }
 
-Vector2d PinholeCamera::
-world2cam(const Vector2d& uv) const
+Eigen::Vector2d PinholeCamera::
+world2cam(const Eigen::Vector2d& uv) const
 {
-  Vector2d px;
+  Eigen::Vector2d px;
   if(!distortion_)
   {
     px[0] = fx_*uv[0] + cx_;

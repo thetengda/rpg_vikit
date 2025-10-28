@@ -11,7 +11,7 @@
 
 namespace vk
 {
-using namespace std;
+// using namespace std;
 
 PerformanceMonitor::PerformanceMonitor()
 {}
@@ -23,27 +23,27 @@ PerformanceMonitor::~PerformanceMonitor()
 }
 
 void PerformanceMonitor::init(
-    const string& trace_name,
-    const string& trace_dir)
+    const std::string& trace_name,
+    const std::string& trace_dir)
 {
   trace_name_ = trace_name;
   trace_dir_ = trace_dir;
-  string filename(trace_dir + "/" + trace_name + ".csv");
+  std::string filename(trace_dir + "/" + trace_name + ".csv");
   ofs_.open(filename.c_str());
   if(!ofs_.is_open())
   {
     printf("Tracefile = %s\n", filename.c_str());
-    throw runtime_error("Could not open tracefile.");
+    throw std::runtime_error("Could not open tracefile.");
   }
   traceHeader();
 }
 
-void PerformanceMonitor::addTimer(const string& name)
+void PerformanceMonitor::addTimer(const std::string& name)
 {
   timers_.insert(make_pair(name, Timer()));
 }
 
-void PerformanceMonitor::addLog(const string& name)
+void PerformanceMonitor::addLog(const std::string& name)
 {
   logs_.insert(make_pair(name, LogItem()));
 }
@@ -61,7 +61,7 @@ void PerformanceMonitor::writeToFile()
   }
 }
 
-void PerformanceMonitor::startTimer(const string& name)
+void PerformanceMonitor::startTimer(const std::string& name)
 {
   auto t = timers_.find(name);
   if(t == timers_.end()) {
@@ -71,7 +71,7 @@ void PerformanceMonitor::startTimer(const string& name)
   t->second.start();
 }
 
-void PerformanceMonitor::stopTimer(const string& name)
+void PerformanceMonitor::stopTimer(const std::string& name)
 {
   auto t = timers_.find(name);
   if(t == timers_.end()) {
@@ -81,7 +81,7 @@ void PerformanceMonitor::stopTimer(const string& name)
   t->second.stop();
 }
 
-double PerformanceMonitor::getTime(const string& name) const
+double PerformanceMonitor::getTime(const std::string& name) const
 {
   auto t = timers_.find(name);
   if(t == timers_.end()) {
@@ -91,7 +91,7 @@ double PerformanceMonitor::getTime(const string& name) const
   return t->second.getTime();
 }
 
-void PerformanceMonitor::log(const string& name, double data)
+void PerformanceMonitor::log(const std::string& name, double data)
 {
   auto l = logs_.find(name);
   if(l == logs_.end()) {

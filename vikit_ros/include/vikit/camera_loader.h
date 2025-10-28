@@ -21,7 +21,7 @@ namespace vk {
 namespace camera_loader {
 
 /// Load from ROS Namespace
-bool loadFromRosNs(const std::string& ns, vk::AbstractCamera*& cam)
+inline bool loadFromRosNs(const std::string& ns, vk::AbstractCamera*& cam)
 {
   bool res = true;
   std::string cam_model(getParam<std::string>(ns+"/cam_model"));
@@ -96,7 +96,7 @@ bool loadFromRosNs(const std::string& ns, vk::AbstractCamera*& cam)
   return res;
 }
 
-bool loadFromRosNs(const std::string& ns, std::vector<vk::AbstractCamera*>& cam_list)
+inline bool loadFromRosNs(const std::string& ns, std::vector<vk::AbstractCamera*>& cam_list)
 {
   bool res = true;
   std::string cam_model(getParam<std::string>(ns+"/cam_model"));

@@ -19,8 +19,8 @@
 
 namespace vk {
 
-using namespace std;
-using namespace Eigen;
+// using namespace std;
+// using namespace Eigen;
 
 struct ocam_model
 {
@@ -48,20 +48,20 @@ public:
   double error_multiplier_;
 
   OmniCamera(){}
-  OmniCamera(string calibFile);
+  OmniCamera(Sophus::string calibFile);
   ~OmniCamera();
 
-  virtual Vector3d
+  virtual Eigen::Vector3d
   cam2world(const double& x, const double& y) const;
 
-  virtual Vector3d
-  cam2world(const Vector2d& px) const;
+  virtual Eigen::Vector3d
+  cam2world(const Eigen::Vector2d& px) const;
 
-  virtual Vector2d
-  world2cam(const Vector3d& xyz_c) const;
+  virtual Eigen::Vector2d
+  world2cam(const Eigen::Vector3d& xyz_c) const;
 
-  virtual Vector2d
-  world2cam(const Vector2d& uv) const;
+  virtual Eigen::Vector2d
+  world2cam(const Eigen::Vector2d& uv) const;
 
   double
   computeErrorMultiplier();

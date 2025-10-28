@@ -12,7 +12,7 @@
 namespace vk {
 
 OmniCamera::
-OmniCamera( string calibFile )
+OmniCamera( std::string calibFile )
 {
   double *pol        = ocamModel.pol;
   double *invpol     = ocamModel.invpol;
@@ -80,10 +80,10 @@ OmniCamera::
 ~OmniCamera()
 {}
 
-Vector3d OmniCamera::
+Eigen::Vector3d OmniCamera::
 cam2world(const double& u, const double& v) const
 {
-  Vector3d xyz;
+  Eigen::Vector3d xyz;
 
   // Important: we exchange x and y since regular pinhole model is working with x along the columns and y along the rows
   // Davide's framework is doing exactly the opposite
@@ -114,19 +114,19 @@ cam2world(const double& u, const double& v) const
   return xyz;
 }
 
-Vector3d OmniCamera::
-cam2world (const Vector2d& px) const
+Eigen::Vector3d OmniCamera::
+cam2world (const Eigen::Vector2d& px) const
 {
   return cam2world(px[0], px[1]);
 }
 
-Vector2d OmniCamera::
-world2cam(const Vector3d& xyz_c) const
+Eigen::Vector2d OmniCamera::
+world2cam(const Eigen::Vector3d& xyz_c) const
 {
-  Vector2d uv;
+  Eigen::Vector2d uv;
 
   // transform world-coordinates to Davide's camera frame
-  Vector3d worldCoordinates_bis;
+  Eigen::Vector3d worldCoordinates_bis;
   worldCoordinates_bis[0] = xyz_c[1];
   worldCoordinates_bis[1] = xyz_c[0];
   worldCoordinates_bis[2] = -xyz_c[2];
@@ -170,8 +170,8 @@ world2cam(const Vector3d& xyz_c) const
   return uv;
 }
 
-Vector2d OmniCamera::
-world2cam(const Vector2d& uv) const
+Eigen::Vector2d OmniCamera::
+world2cam(const Eigen::Vector2d& uv) const
 {
   return world2cam(unproject2d(uv).normalized());
 }
@@ -179,8 +179,8 @@ world2cam(const Vector2d& uv) const
 double OmniCamera::
 computeErrorMultiplier()
 {
-  Vector3d vector1 = cam2world( .5*width_, .5*height_ );
-  Vector3d vector2 = cam2world( .5*width_ + .5, .5*height_ );
+  Eigen::Vector3d vector1 = cam2world( .5*width_, .5*height_ );
+  Eigen::Vector3d vector2 = cam2world( .5*width_ + .5, .5*height_ );
   vector1 = vector1/vector1.norm();
   vector2 = vector2/vector2.norm();
 

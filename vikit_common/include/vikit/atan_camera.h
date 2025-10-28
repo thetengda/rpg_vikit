@@ -21,8 +21,8 @@
 
 namespace vk {
 
-using namespace std;
-using namespace Eigen;
+// using namespace std;
+// using namespace Eigen;
 
 class ATANCamera : public AbstractCamera {
 
@@ -58,21 +58,21 @@ public:
 
   ~ATANCamera();
 
-  virtual Vector3d
+  virtual Eigen::Vector3d
   cam2world(const double& x, const double& y) const;
 
-  virtual Vector3d
-  cam2world(const Vector2d& px) const;
+  virtual Eigen::Vector3d
+  cam2world(const Eigen::Vector2d& px) const;
 
-  virtual Vector2d
-  world2cam(const Vector3d& xyz_c) const;
+  virtual Eigen::Vector2d
+  world2cam(const Eigen::Vector3d& xyz_c) const;
 
-  virtual Vector2d
-  world2cam(const Vector2d& uv) const;
+  virtual Eigen::Vector2d
+  world2cam(const Eigen::Vector2d& uv) const;
 
-  const Vector2d focal_length() const
+  const Eigen::Vector2d focal_length() const
   {
-    return Vector2d(fx_, fy_);
+    return Eigen::Vector2d(fx_, fy_);
   }
 
   virtual double errorMultiplier2() const

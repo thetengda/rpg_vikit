@@ -110,9 +110,9 @@ void vk::NLLSSolver<D, T>::optimizeLevenbergMarquardt(ModelType& model)
   chi2_ = computeResiduals(model, true, false);
 
   if(verbose_)
-    cout << "init chi2 = " << chi2_
+    std::cout << "init chi2 = " << chi2_
          << "\t n_meas = " << n_meas_
-         << endl;
+         << std::endl;
 
   // TODO: compute initial lambda
   // Hartley and Zisserman: "A typical init value of lambda is 10^-3 times the
@@ -124,7 +124,7 @@ void vk::NLLSSolver<D, T>::optimizeLevenbergMarquardt(ModelType& model)
     double H_max_diag = 0;
     double tau = 1e-4;
     for(size_t j=0; j<D; ++j)
-      H_max_diag = max(H_max_diag, fabs(H_(j,j)));
+      H_max_diag = std::max(H_max_diag, fabs(H_(j,j)));
     mu_ = tau*H_max_diag;
   }
 
@@ -170,9 +170,9 @@ void vk::NLLSSolver<D, T>::optimizeLevenbergMarquardt(ModelType& model)
       else
       {
         // matrix was singular and could not be computed
-        cout << "Matrix is close to singular!" << endl;
-        cout << "H = " << H_ << endl;
-        cout << "Jres = " << Jres_ << endl;
+        std::cout << "Matrix is close to singular!" << std::endl;
+        std::cout << "H = " << H_ << std::endl;
+        std::cout << "Jres = " << Jres_ << std::endl;
         rho_ = -1;
       }
 
@@ -182,18 +182,18 @@ void vk::NLLSSolver<D, T>::optimizeLevenbergMarquardt(ModelType& model)
         model = new_model;
         chi2_ = new_chi2;
         stop_ = vk::norm_max(x_)<=eps_;
-        mu_ *= max(1./3., min(1.-pow(2*rho_-1,3), 2./3.));
+        mu_ *= std::max(1./3., std::min(1.-std::pow(2*rho_-1,3), 2./3.));
         nu_ = 2.;
         if(verbose_)
         {
-          cout << "It. " << iter_
+          std::cout << "It. " << iter_
                << "\t Trial " << n_trials_
                << "\t Success"
                << "\t n_meas = " << n_meas_
                << "\t new_chi2 = " << new_chi2
                << "\t mu = " << mu_
                << "\t nu = " << nu_
-               << endl;
+               << std::endl;
         }
       }
       else
@@ -207,14 +207,14 @@ void vk::NLLSSolver<D, T>::optimizeLevenbergMarquardt(ModelType& model)
 
         if(verbose_)
         {
-          cout << "It. " << iter_
+          std::cout << "It. " << iter_
                << "\t Trial " << n_trials_
                << "\t Failure"
                << "\t n_meas = " << n_meas_
                << "\t new_chi2 = " << new_chi2
                << "\t mu = " << mu_
                << "\t nu = " << nu_
-               << endl;
+               << std::endl;
         }
       }
 
@@ -288,7 +288,7 @@ void vk::NLLSSolver<D, T>::setRobustCostFunction(
 template <int D, typename T>
 void vk::NLLSSolver<D, T>::setPrior(
     const T&  prior,
-    const Matrix<double, D, D>&  Information)
+    const Eigen::Matrix<double, D, D>&  Information)
 {
   have_prior_ = true;
   prior_ = prior;
@@ -315,7 +315,7 @@ inline const double& vk::NLLSSolver<D, T>::getChi2() const
 }
 
 template <int D, typename T>
-inline const vk::Matrix<double, D, D>& vk::NLLSSolver<D, T>::getInformationMatrix() const
+inline const Eigen::Matrix<double, D, D>& vk::NLLSSolver<D, T>::getInformationMatrix() const
 {
   return H_;
 }

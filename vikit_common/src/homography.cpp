@@ -16,8 +16,8 @@
 namespace vk {
 
 Homography::
-Homography(const vector<Vector2d, aligned_allocator<Vector2d> >& _fts1,
-           const vector<Vector2d, aligned_allocator<Vector2d> >& _fts2,
+Homography(const std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> >& _fts1,
+           const std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> >& _fts2,
            double _error_multiplier2,
            double _thresh_in_px) :
    thresh(_thresh_in_px),
@@ -28,7 +28,7 @@ Homography(const vector<Vector2d, aligned_allocator<Vector2d> >& _fts1,
 }
 
 void Homography::
-calcFromPlaneParams(const Vector3d& n_c1, const Vector3d& xyz_c1)
+calcFromPlaneParams(const Eigen::Vector3d& n_c1, const Eigen::Vector3d& xyz_c1)
 {
   double d = n_c1.dot(xyz_c1); // normal distance from plane to KF
   H_c2_from_c1 = T_c2_from_c1.rotation_matrix() + (T_c2_from_c1.translation()*n_c1.transpose())/d;
@@ -37,7 +37,7 @@ calcFromPlaneParams(const Vector3d& n_c1, const Vector3d& xyz_c1)
 void Homography::
 calcFromMatches()
 {
-  vector<cv::Point2f> src_pts(fts_c1.size()), dst_pts(fts_c1.size());
+  std::vector<cv::Point2f> src_pts(fts_c1.size()), dst_pts(fts_c1.size());
   for(size_t i=0; i<fts_c1.size(); ++i)
   {
     src_pts[i] = cv::Point2f(fts_c1[i][0], fts_c1[i][1]);
@@ -64,8 +64,8 @@ computeMatchesInliers()
   size_t n_inliers = 0;
   for(size_t i=0; i<fts_c1.size(); i++)
   {
-    Vector2d projected = project2d(H_c2_from_c1 * unproject2d(fts_c1[i]));
-    Vector2d e = fts_c2[i] - projected;
+    Eigen::Vector2d projected = project2d(H_c2_from_c1 * unproject2d(fts_c1[i]));
+    Eigen::Vector2d e = fts_c2[i] - projected;
     double e_px = error_multiplier2 * e.norm();
     inliers[i] = (e_px < thresh);
     n_inliers += inliers[i];
@@ -91,16 +91,16 @@ bool Homography::
 decompose()
 {
   decompositions.clear();
-  JacobiSVD<MatrixXd> svd(H_c2_from_c1, ComputeThinU | ComputeThinV);
+  Eigen::JacobiSVD<Eigen::MatrixXd> svd(H_c2_from_c1, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
-  Vector3d singular_values = svd.singularValues();
+  Eigen::Vector3d singular_values = svd.singularValues();
 
   double d1 = fabs(singular_values[0]); // The paper suggests the square of these (e.g. the evalues of AAT)
   double d2 = fabs(singular_values[1]); // should be used, but this is wrong. c.f. Faugeras' book.
   double d3 = fabs(singular_values[2]);
 
-  Matrix3d U = svd.matrixU();
-  Matrix3d V = svd.matrixV();                    // VT^T
+  Eigen::Matrix3d U = svd.matrixU();
+  Eigen::Matrix3d V = svd.matrixV();                    // VT^T
 
   double s = U.determinant() * V.determinant();
 
@@ -135,7 +135,7 @@ decompose()
   double e1[4] = {1.0,-1.0, 1.0,-1.0};
   double e3[4] = {1.0, 1.0,-1.0,-1.0};
 
-  Vector3d np;
+  Eigen::Vector3d np;
   HomographyDecomposition decomp;
 
   // Case 1, d' > 0:
@@ -143,7 +143,7 @@ decompose()
   for(size_t signs=0; signs<4; signs++)
   {
     // Eq 13
-    decomp.R = Matrix3d::Identity();
+    decomp.R = Eigen::Matrix3d::Identity();
     double dSinTheta = (d1 - d3) * x1_PM * x3_PM * e1[signs] * e3[signs] / d2;
     double dCosTheta = (d1 * x3_PM * x3_PM + d3 * x1_PM * x1_PM) / d2;
     decomp.R(0,0) = dCosTheta;
@@ -169,7 +169,7 @@ decompose()
   for(size_t signs=0; signs<4; signs++)
   {
     // Eq 15
-    decomp.R = -1 * Matrix3d::Identity();
+    decomp.R = -1 * Eigen::Matrix3d::Identity();
     double dSinPhi = (d1 + d3) * x1_PM * x3_PM * e1[signs] * e3[signs] / d2;
     double dCosPhi = (d3 * x1_PM * x1_PM - d1 * x3_PM * x3_PM) / d2;
     decomp.R(0,0) = dCosPhi;
@@ -193,8 +193,8 @@ decompose()
   // Save rotation and translation of the decomposition
   for(unsigned int i=0; i<decompositions.size(); i++)
   {
-    Matrix3d R = s * U * decompositions[i].R * V.transpose();
-    Vector3d t = U * decompositions[i].t;
+    Eigen::Matrix3d R = s * U * decompositions[i].R * V.transpose();
+    Eigen::Vector3d t = U * decompositions[i].t;
     decompositions[i].T = Sophus::SE3(R, t);
   }
   return true;
@@ -217,7 +217,7 @@ findBestDecomposition()
     {
       if(!inliers[m])
         continue;
-      const Vector2d& v2 = fts_c1[m];
+      const Eigen::Vector2d& v2 = fts_c1[m];
       double dVisibilityTest = (H_c2_from_c1(2,0) * v2[0] + H_c2_from_c1(2,1) * v2[1] + H_c2_from_c1(2,2)) / decom.d;
       if(dVisibilityTest > 0.0)
         nPositive++;
@@ -236,7 +236,7 @@ findBestDecomposition()
     {
       if(!inliers[m])
         continue;
-      Vector3d v3 = unproject2d(fts_c1[m]);
+      Eigen::Vector3d v3 = unproject2d(fts_c1[m]);
       double dVisibilityTest = v3.dot(decom.n) / decom.d;
       if(dVisibilityTest > 0.0)
         nPositive++;
@@ -260,7 +260,7 @@ findBestDecomposition()
     for(size_t i=0; i<2; i++)
     {
       Sophus::SE3 T = decompositions[i].T;
-      Matrix3d Essential = T.rotation_matrix() * sqew(T.translation());
+      Eigen::Matrix3d Essential = T.rotation_matrix() * sqew(T.translation());
       double dSumError = 0;
       for(size_t m=0; m < fts_c1.size(); m++ )
       {
