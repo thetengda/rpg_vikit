@@ -34,7 +34,7 @@ struct HomographyDecomposition
   Eigen::Vector3d n;
 
   // Resolved  Composition
-  Sophus::SE3 T; //!< second from first
+  Sophus::SE3d T; //!< second from first
   int score;
 };
 
@@ -72,7 +72,7 @@ public:
   const std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> >& fts_c1; //!< Features on first image on unit plane
   const std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> >& fts_c2; //!< Features on second image on unit plane
   std::vector<bool> inliers;
-  Sophus::SE3 T_c2_from_c1;             //!< Relative translation and rotation of two images
+  Sophus::SE3d T_c2_from_c1;             //!< Relative translation and rotation of two images
   Eigen::Matrix3d H_c2_from_c1;                   //!< Homography
   std::vector<HomographyDecomposition> decompositions;
 };

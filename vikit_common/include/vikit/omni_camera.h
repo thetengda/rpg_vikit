@@ -48,7 +48,7 @@ public:
   double error_multiplier_;
 
   OmniCamera(){}
-  OmniCamera(Sophus::string calibFile);
+  OmniCamera(std::string calibFile);
   ~OmniCamera();
 
   virtual Eigen::Vector3d
