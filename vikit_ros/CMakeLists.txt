@@ -21,6 +21,8 @@ FIND_PACKAGE(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 FIND_PACKAGE(Sophus 1.22 REQUIRED)
 
+add_definitions(-DSOPHUS_USE_BASIC_LOGGING)
+
 # Include dirs
 INCLUDE_DIRECTORIES(
   include

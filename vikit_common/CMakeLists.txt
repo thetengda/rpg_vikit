@@ -27,11 +27,12 @@ ELSE()
 ENDIF()
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -fsee -fomit-frame-pointer -fno-signed-zeros -fno-math-errno -funroll-loops")
 
+add_definitions(-DSOPHUS_USE_BASIC_LOGGING)
+
 # Add plain cmake packages 
 FIND_PACKAGE(OpenCV REQUIRED)
 FIND_PACKAGE(Eigen REQUIRED)
 FIND_PACKAGE(Sophus 1.22 REQUIRED)
-find_package(fmt REQUIRED)
 
 # Include dirs
 INCLUDE_DIRECTORIES(
@@ -45,7 +46,7 @@ IF(USE_ROS)
   FIND_PACKAGE(catkin REQUIRED COMPONENTS roscpp cmake_modules)
   LIST(APPEND INCLUDE_DIRECTORIES ${catkin_INCLUDE_DIRS})
   catkin_package(
-    DEPENDS Eigen OpenCV Sophus fmt
+    DEPENDS Eigen OpenCV Sophus
     CATKIN_DEPENDS roscpp
     INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
@@ -73,7 +74,6 @@ LIST(APPEND SOURCEFILES src/atan_camera.cpp
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCEFILES})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}
   ${OpenCV_LIBS}
-  fmt::fmt
   ${catkin_LIBRARIES})
 
 IF(USE_ROS)
